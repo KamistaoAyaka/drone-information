@@ -7,3 +7,6 @@ main:
           spec:
             branch: main
             dir: static_site
+          afterScript: |
+            # 输出静态站点访问地址（替换为你的项目实际地址格式）
+            echo "静态站点访问地址：https://<你的项目名>.<你的组织名>.cnb.run"
