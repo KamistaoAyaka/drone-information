@@ -1,0 +1,64 @@
+<view class="container">
+  <!-- 头部 -->
+  <view class="header">
+    <view class="title">🚁 无人机前沿情报</view>
+    <view class="subtitle">实时采集全球无人机行业最新资讯</view>
+  </view>
+
+  <!-- 统计卡片 -->
+  <view class="stats-section">
+    <view class="stats-grid">
+      <view class="stat-card">
+        <view class="stat-number">{{statistics.total}}</view>
+        <view class="stat-label">总资讯</view>
+      </view>
+      <view class="stat-card">
+        <view class="stat-number">{{statistics.today}}</view>
+        <view class="stat-label">今日新增</view>
+      </view>
+      <view class="stat-card">
+        <view class="stat-number">{{statistics.sources}}</view>
+        <view class="stat-label">数据来源</view>
+      </view>
+    </view>
+    <view class="refresh-time" wx:if="{{refreshTime}}">
+      最后更新: {{refreshTime}}
+    </view>
+  </view>
+
+  <!-- 最新资讯 -->
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">最新资讯</text>
+      <text class="section-more" bindtap="goToList">更多 ></text>
+    </view>
+
+    <!-- 加载状态 -->
+    <view class="loading" wx:if="{{isLoading}}">
+      <text>加载中...</text>
+    </view>
+
+    <!-- 文章列表 -->
+    <view class="article-list" wx:else>
+      <block wx:for="{{latestArticles}}" wx:key="id">
+        <view class="article-card" bindtap="goToArticle" data-id="{{item.id}}">
+          <view class="article-meta">
+            <text class="source">{{item.source || '未知来源'}}</text>
+            <text class="date">{{item.publish_date}}</text>
+          </view>
+          <view class="article-title">{{item.title}}</view>
+          <view class="article-summary" wx:if="{{item.summary}}">
+            {{item.summary}}
+          </view>
+          <view class="article-tags" wx:if="{{item.region || item.drone_type}}">
+            <text class="tag" wx:if="{{item.region}}">{{item.region}}</text>
+            <text class="tag" wx:if="{{item.drone_type}}">{{item.drone_type}}</text>
+          </view>
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <!-- 底部间距 -->
+  <view class="bottom-space"></view>
+</view>
