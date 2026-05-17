@@ -562,7 +562,26 @@ footer a {
     
     def generate_article_detail(self, article: Dict):
         """生成文章详情页"""
-        content = article.get('content', '暂无内容')
+        content = article.get('content') or ''
+        summary = article.get('summary') or ''
+        title = article.get('title', '无标题')
+        source = article.get('source', '未知来源')
+        url = article.get('url', '')
+        
+        display_parts = []
+        
+        if content and content.strip():
+            display_parts.append(content)
+        elif summary and summary.strip():
+            display_parts.append(f"<h3>文章摘要</h3>\n<p>{summary}</p>")
+        
+        if not content or not content.strip():
+            if url:
+                display_parts.append(f'<p style="margin-top: 20px;"><a href="{url}" target="_blank" style="color: var(--accent);">🔗 阅读原文 →</a></p>')
+            else:
+                display_parts.append('<p style="color: var(--text-muted); margin-top: 20px;">暂无详细内容</p>')
+        
+        display_content = '\n'.join(display_parts)
         
         timestamp_comment = get_timestamp_comment()
         html = f"""<!DOCTYPE html>
@@ -570,8 +589,8 @@ footer a {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="{article.get('summary', '')[:150]}">
-    <title>{article.get('title', '文章详情')} - 无人机前沿情报系统</title>
+    <meta name="description" content="{summary[:150]}">
+    <title>{title} - 无人机前沿情报系统</title>
     <link rel="stylesheet" href="/assets/css/style.css">
 </head>
 <body>
@@ -583,9 +602,9 @@ footer a {
     
     <article class="article-detail">
         <header>
-            <h1>{article.get('title', '无标题')}</h1>
+            <h1>{title}</h1>
             <div class="meta">
-                <span>📰 {article.get('source', '未知来源')}</span>
+                <span>📰 {source}</span>
                 <span>📅 {article.get('publish_date', '未知日期')}</span>
                 {f'<span>🌍 {article.get("region", "")}</span>' if article.get('region') else ''}
                 {f'<span>🛸 {article.get("drone_type", "")}</span>' if article.get('drone_type') else ''}
@@ -594,7 +613,7 @@ footer a {
         </header>
         
         <div class="content">
-{content}
+{display_content}
         </div>
         
         <a href="/list.html" class="back-link">← 返回资讯列表</a>
