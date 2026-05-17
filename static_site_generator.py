@@ -20,13 +20,22 @@ class StaticSiteGenerator:
         self.output_dir = output_dir
         self.articles_per_page = 20
         
+    def _apply_translation(self, article: Dict) -> Dict:
+        """如果存在翻译内容，优先使用翻译后的字段"""
+        if article.get('title_translated'):
+            article['title'] = article['title_translated']
+        if article.get('summary_translated'):
+            article['summary'] = article['summary_translated']
+        if article.get('content_translated'):
+            article['content'] = article['content_translated']
+        return article
+
     def _get_articles(self, limit: int = 100, days: int = 30) -> List[Dict]:
         """获取最近的资讯"""
         conn = sqlite3.connect(self.db_path)
         conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
         
-        # 计算日期范围
         start_date = (datetime.now() - timedelta(days=days)).strftime('%Y-%m-%d')
         
         cursor.execute("""
@@ -38,6 +47,8 @@ class StaticSiteGenerator:
         
         articles = [dict(row) for row in cursor.fetchall()]
         conn.close()
+        
+        articles = [self._apply_translation(a) for a in articles]
         
         return articles
     
@@ -51,6 +62,9 @@ class StaticSiteGenerator:
         row = cursor.fetchone()
         article = dict(row) if row else None
         conn.close()
+        
+        if article:
+            article = self._apply_translation(article)
         
         return article
     
