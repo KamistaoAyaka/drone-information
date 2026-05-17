@@ -8,6 +8,12 @@ from datetime import datetime, timedelta
 from typing import List, Dict, Optional
 import json
 
+
+def get_timestamp_comment() -> str:
+    """生成时间戳注释，确保每次生成的文件内容不同，Git能检测到变更"""
+    timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    return f"\n<!-- Generated at: {timestamp} -->\n"
+
 class StaticSiteGenerator:
     def __init__(self, db_path: str = "data/drone_scout.db", output_dir: str = "static_site"):
         self.db_path = db_path
@@ -387,6 +393,7 @@ footer a {
                 </article>
             """
         
+        timestamp_comment = get_timestamp_comment()
         html = f"""<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -445,7 +452,7 @@ footer a {
         </p>
     </footer>
 </body>
-</html>"""
+</html>{timestamp_comment}"""
         
         with open(os.path.join(self.output_dir, "index.html"), 'w', encoding='utf-8') as f:
             f.write(html)
@@ -492,6 +499,7 @@ footer a {
             if page < total_pages:
                 pagination_html += f'<a href="/list-{page + 1}.html">下一页</a>'
         
+        timestamp_comment = get_timestamp_comment()
         html = f"""<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -528,7 +536,7 @@ footer a {
         <p>© 2024 无人机前沿情报系统 | 数据每日自动更新</p>
     </footer>
 </body>
-</html>"""
+</html>{timestamp_comment}"""
         
         if page == 1:
             with open(os.path.join(self.output_dir, "list.html"), 'w', encoding='utf-8') as f:
@@ -542,6 +550,7 @@ footer a {
         """生成文章详情页"""
         content = article.get('content', '暂无内容')
         
+        timestamp_comment = get_timestamp_comment()
         html = f"""<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -581,7 +590,7 @@ footer a {
         <p>© 2024 无人机前沿情报系统 | 数据每日自动更新</p>
     </footer>
 </body>
-</html>"""
+</html>{timestamp_comment}"""
         
         filename = f"{article['id']}.html"
         with open(os.path.join(self.output_dir, "articles", filename), 'w', encoding='utf-8') as f:
