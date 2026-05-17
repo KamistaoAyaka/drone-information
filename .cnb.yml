@@ -1,0 +1,9 @@
+main:
+  push:
+    - name: "部署静态网站"
+      stages:
+        - name: deploy-static-site
+          type: pages
+          spec:
+            branch: main
+            dir: static_site
