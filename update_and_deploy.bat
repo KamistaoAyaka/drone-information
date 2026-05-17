@@ -28,6 +28,7 @@ git add static_site/
 git add .github/
 git add *.bat
 git add *.md
+git add static_site_generator.py
 git status
 git diff --staged --quiet
 if errorlevel 1 (
@@ -41,7 +42,7 @@ if errorlevel 1 (
 
 echo.
 echo [4/4] Pushing to GitHub...
-git push
+git push origin main
 if errorlevel 1 (
     echo WARNING: Push may have failed
 ) else (

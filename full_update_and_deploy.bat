@@ -40,6 +40,11 @@ if errorlevel 1 (
 echo.
 echo [4/5] Committing changes...
 git add static_site/
+git add .github/
+git add *.bat
+git add *.md
+git add static_site_generator.py
+git status
 git diff --staged --quiet
 if errorlevel 1 (
     for /f "tokens=2 delims==" %%I in ('wmic os get localdatetime /value') do set datetime=%%I
@@ -52,7 +57,7 @@ if errorlevel 1 (
 
 echo.
 echo [5/5] Pushing to GitHub...
-git push
+git push origin main
 if errorlevel 1 (
     echo WARNING: Push may have failed
 ) else (
