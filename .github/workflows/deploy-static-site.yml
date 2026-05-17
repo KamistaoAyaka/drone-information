@@ -1,0 +1,55 @@
+name: Deploy Static Site
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Generate static site
+        id: generate
+        run: |
+          echo "=== 开始生成静态网站 ==="
+          python static_site_generator.py
+          echo "generate_status=success" >> $GITHUB_OUTPUT
+
+      - name: Check for changes
+        id: git-changes
+        run: |
+          git add static_site/
+          if git diff --staged --quiet; then
+            echo "changes=false" >> $GITHUB_OUTPUT
+            echo "没有需要更新的内容"
+          else
+            echo "changes=true" >> $GITHUB_OUTPUT
+            echo "检测到内容更新"
+          fi
+
+      - name: Commit and push changes
+        if: steps.git-changes.outputs.changes == 'true'
+        run: |
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore: 自动更新静态网站内容 [skip ci]"
+          git push
