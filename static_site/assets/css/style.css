@@ -208,7 +208,6 @@ nav a:hover {
     border-radius: 8px;
     font-size: 1.1rem;
     line-height: 1.8;
-    white-space: pre-wrap;
 }
 
 .article-detail .content img {
@@ -216,6 +215,36 @@ nav a:hover {
     height: auto;
     border-radius: 8px;
     margin: 20px 0;
+}
+
+.article-detail .content p {
+    margin: 12px 0;
+}
+
+.article-detail .content h1, .article-detail .content h2, .article-detail .content h3, .article-detail .content h4 {
+    margin: 20px 0 10px 0;
+    color: var(--text);
+}
+
+.article-detail .content a {
+    color: var(--accent);
+    text-decoration: none;
+}
+
+.article-detail .content a:hover {
+    text-decoration: underline;
+}
+
+.article-detail .content ul, .article-detail .content ol {
+    margin: 10px 0;
+    padding-left: 24px;
+}
+
+.article-detail .content blockquote {
+    border-left: 3px solid var(--accent);
+    margin: 16px 0;
+    padding: 8px 16px;
+    color: var(--text-muted);
 }
 
 .article-detail .back-link {
